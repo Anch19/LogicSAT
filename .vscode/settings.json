@@ -1,0 +1,10 @@
+{
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "list.h": "c",
+    "locale": "cpp",
+    "complex": "c",
+    "string": "c",
+    "__config": "c"
+  }
+}
