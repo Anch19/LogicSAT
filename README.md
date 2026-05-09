@@ -1,161 +1,114 @@
 # LogicSAT
 
-A SAT Solver implementation for solving Boolean Satisfiability (SAT) problems using classical SAT-solving techniques.
+A Boolean SAT solver written in C, implementing the **DPLL algorithm** for deciding the satisfiability of propositional formulas in CNF.
 
-This project parses Boolean formulas in CNF (Conjunctive Normal Form) and determines whether the formula is satisfiable or unsatisfiable. The solver is designed as an educational and algorithmic implementation of core SAT-solving concepts used in constraint solving, verification systems, AI, and optimization problems.
+Given a Boolean formula in DIMACS CNF format, the solver returns either a satisfying variable assignment (`SAT`) or proves no such assignment exists (`UNSAT`).
 
----
-
-## Features
-
-- DIMACS CNF file parsing
-- Boolean satisfiability checking
-- Efficient clause evaluation
-- Recursive backtracking search
-- Unit propagation
-- Pure literal elimination
-- SAT / UNSAT result generation
-- Clean modular implementation
+Built as a coursework project at Universität des Saarlandes to explore search-based decision procedures and the structure of NP-complete problems.
 
 ---
 
-## Algorithms Used
+## Algorithms
 
-Depending on your implementation, keep only the relevant ones:
-
-- DPLL (Davis–Putnam–Logemann–Loveland)
-- Backtracking Search
-- Unit Propagation
-- Pure Literal Elimination
-- Clause Learning (if implemented)
-- Conflict Analysis (if implemented)
+- **DPLL** (Davis–Putnam–Logemann–Loveland) — recursive backtracking search over partial assignments
+- **Unit propagation** — forced literals are assigned before branching, pruning the search space
+- **Pure literal elimination** — variables appearing in only one polarity are assigned to satisfy their clauses
+- **Conflict-driven backtracking** — on conflict, the solver unwinds the most recent decision and tries the opposite assignment
 
 ---
 
-## Project Structure
+## Build
 
-```text
-.
-├── src/                # Source code
-├── examples/           # Example CNF test files
-├── tests/              # Test cases
-├── Makefile / build    # Build configuration
-└── README.md
-```
-
----
-
-## Input Format
-
-The solver accepts formulas in standard DIMACS CNF format.
-
-Example:
-
-```txt
-c Example CNF Formula
-p cnf 3 2
-1 -3 0
-2 3 -1 0
-```
-
----
-
-## Build Instructions
-
-### Compile
+Requires `gcc` and `make`.
 
 ```bash
 make
 ```
 
-or
-
-```bash
-g++ *.cpp -o sat_solver
-```
+This produces the `sat_solver` binary.
 
 ---
 
-## Running the Solver
+## Usage
 
 ```bash
-./sat_solver input.cnf
+./sat_solver path/to/input.cnf
 ```
 
 Example:
 
 ```bash
-./sat_solver examples/test.cnf
+./sat_solver test/example.cnf
 ```
 
----
+### Output
 
-## Example Output
+If satisfiable:
 
-```txt
+```
 SAT
-
 1 = TRUE
 2 = FALSE
 3 = TRUE
 ```
 
-or
+If unsatisfiable:
 
-```txt
+```
 UNSAT
 ```
 
 ---
 
-## Applications of SAT Solvers
+## Input format
 
-SAT solvers are widely used in:
+Standard [DIMACS CNF](https://www.cs.utexas.edu/~marijn/Sat-Race/2008-rules.html#format). Each clause is a space-separated list of integers terminated by `0`. A positive integer `n` represents variable *xₙ*; a negative integer `-n` represents its negation.
 
-- Artificial Intelligence
-- Hardware Verification
-- Software Testing
-- Scheduling Problems
-- Constraint Solving
-- Automated Planning
-- Formal Verification
-- Optimization Problems
+Example — encoding `(x₁ ∨ ¬x₃) ∧ (x₂ ∨ x₃ ∨ ¬x₁)`:
 
----
+```
+c Example CNF formula
+p cnf 3 2
+1 -3 0
+2 3 -1 0
+```
 
-## Learning Objectives
-
-This project was built to explore:
-
-- Computational complexity
-- NP-complete problems
-- Search algorithms
-- Logic and satisfiability
-- Efficient recursive solving techniques
+The `p cnf` header declares 3 variables and 2 clauses. Lines starting with `c` are comments.
 
 ---
 
-## Future Improvements
+## Project structure
 
-- CDCL optimization
-- Watched literals
-- Heuristic branching
-- Performance benchmarking
-- Parallel SAT solving
-- GUI visualization
+```
+src/        # solver implementation (parser, DPLL, propagation)
+test/       # CNF test inputs
+Makefile    # build configuration
+```
+
+---
+
+## Possible extensions
+
+Natural next steps if the solver were extended toward modern SAT-solving techniques:
+
+- **CDCL** (Conflict-Driven Clause Learning) — learn clauses from conflicts to prune future search
+- **Two-watched-literals** scheme — efficient unit propagation
+- **VSIDS** branching heuristic — prioritise variables active in recent conflicts
+- **Restarts** and benchmarking against SATLIB instances
 
 ---
 
-## Technologies Used
+## Background
 
-- C++
-- STL
-- Makefile
-- DIMACS CNF standard
+SAT was the first problem proven NP-complete (Cook–Levin, 1971). Despite this, modern SAT solvers routinely handle industrial instances with millions of variables. They underpin work in hardware verification, software model checking, automated planning, and formal methods.
 
 ---
+
+## Tech
+
+C · STL · Make · DIMACS CNF
 
 ## Author
 
-Antriksh Chaudhary
+**Antriksh Chaudhary**
 
